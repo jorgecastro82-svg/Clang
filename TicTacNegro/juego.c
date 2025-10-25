@@ -9,13 +9,11 @@ void Inicirespuesta(char *);
 
 void Imagenrespuesta(char *);
 
-void printfRojo(char*);
+void printfRojoChar(char);
 
-void printfAzul(char*);
+void printfAzulChar(char);
 
 int main(){
-    printfRojo("Hola negros\n");
-    printfAzul("Hola negros\n");
     char respuesta[REN][COL];
 	Inicirespuesta((char*)respuesta);
 	Imagenrespuesta((char*)respuesta);
@@ -24,12 +22,12 @@ int main(){
     return 0;
 }
 
-void printfRojo(char *cadena){
-    printf("\033[1;31m%s\033[0m",cadena);
+void printfRojoChar(char c){
+    printf("\033[1;31m%c\033[0m",c);
 }
 
-void printfAzul(char *cadena){
-    printf("\033[1;34m%s\033[0m",cadena);
+void printfAzulChar(char c){
+    printf("\033[1;34m%c\033[0m",c);
 }
 
 void Imptablero(char *matriz){
@@ -41,7 +39,7 @@ void Imptablero(char *matriz){
 		for(i=0;i<REN;i++){
 			printf("\n");
 			for(j=0;j<COL;j++){
-				printfRojo("%c",matriz[(i*COL)+j]);
+				printfRojoChar(matriz[(i*COL)+j]);
 
 			}
 		}
