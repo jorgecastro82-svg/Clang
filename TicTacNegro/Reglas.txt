@@ -1,0 +1,11 @@
+grid de 3x3
+
+si es mayor se lo puede comer
+caso contrario no
+
+3 gana duhh
+
+6 cochinadas rojas y 6 azules
+2 grandes para cada color
+2 medianos para cada color
+2 pequeños para cada color
