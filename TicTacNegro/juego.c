@@ -3,6 +3,8 @@
 
 #define COL 11
 
+int menu(char *);
+
 void Imptablero(char *);
 
 void Inicirespuesta(char *);
@@ -15,9 +17,10 @@ void printfAzulChar(char);
 
 int main(){
     char respuesta[REN][COL];
-	Inicirespuesta((char*)respuesta);
-	Imagenrespuesta((char*)respuesta);
-	Imptablero((char*)respuesta);
+    int opc=0;
+    do{
+        opc=menu((char*)respuesta);
+    }while(opc==0);
 
     return 0;
 }
@@ -49,6 +52,13 @@ void Inicirespuesta(char *matriz){
 			for(i=0;i<REN;i++){
 			for(j=0;j<COL;j++){
 				matriz[(i*COL)+j]=' ';
+                if(j==3||j==7){
+                    matriz[(i*COL)+j]=124;
+                }
+                if(i==3||i==7){
+                    matriz[(i*COL)+j]=196;
+                }
+
 
 			}
 			}
@@ -63,4 +73,11 @@ void Imagenrespuesta(char *matriz){
 
 			}
 			}
+}
+
+int menu(char* respuesta){
+    Inicirespuesta(respuesta);
+	Imagenrespuesta(respuesta);
+	Imptablero(respuesta);
+    return 1;
 }
