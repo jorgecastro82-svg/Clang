@@ -10,11 +10,11 @@ void Imptablero(char *);
 
 void Inicirespuesta(char *);
 
-void Imagenrespuestamediana(char *,int*,int*,int*,int *,int*);
+void Imagenrespuestamediana(char *,int*,int*,int*,int *,int*,int*);
 
-void Imagenrespuestachica(char *,int*,int*,int*,int *,int*);
+void Imagenrespuestachica(char *,int*,int*,int*,int *,int*,int*);
 
-void Imagenrespuestagrande(char *,int*,int*,int*,int *,int*);
+void Imagenrespuestagrande(char *,int*,int*,int*,int *,int*,int*);
 
 int tamano(char*,int*,int*,int*,int*,int*,int*,int*,int*,int*,int *,int*);
 
@@ -22,7 +22,7 @@ void printfRojoChar(char);
 
 void printfAzulChar(char);
 
-int cuadrante();
+int cuadrante(int*);
 
 void separacion(int,int*,int*,int *,int*);
 
@@ -33,13 +33,18 @@ int main(){
 	int grandeT2=0;
 	int chicoT2=0;
 	int medT2=0;
-	int player=1,ren=0,col=0,ci=0,cj=0;
+	int player=1,ren=0,col=0,ci=0,cj=0,otra=0;
     char respuesta[REN][COL];
     int opc=0;
+	do{
+		Inicirespuesta((char*)respuesta);
     do{
         opc=menu((char*)respuesta,&grandeT1,&grandeT2,&medT1,&medT2,&chicoT1,&chicoT2,&player,&ren,&col,&ci,&cj);
     }while(opc==0);
 	printf("\n");
+	printf("Quieres jugar otra? 0=si cualquier numero =No\n");
+	scanf("%d",&otra);
+	}while(otra==0);
     return 0;
 }
 
@@ -60,8 +65,7 @@ void Imptablero(char *matriz){
 		for(i=0;i<REN;i++){
 			printf("\n");
 			for(j=0;j<COL;j++){
-				printfRojoChar(matriz[(i*COL)+j]);
-
+				printf("%-2c",matriz[(i*COL)+j]);
 			}
 		}
 	}
@@ -81,45 +85,63 @@ void Inicirespuesta(char *matriz){
 			}
 			}
 }
-void Imagenrespuestamediana(char *matriz, int* m,int*r,int*c,int*ci,int*cj){
+void Imagenrespuestamediana(char *matriz, int* m,int*r,int*c,int*ci,int*cj,int *p){
 			int i,j;
 			for(i=(*ci);i<(REN)-(*r);i++){
 			for(j=(*cj);j<(COL)-(*c);j++){
 				if(((i+j)-((*ci)+(*cj)))==1||((i+j)-((*ci)+(*cj)+1))==2){
-				matriz[(i*COL)+j]=254;
+					if(((*p)%2)!=0){	//if para ver si es el jugador 1
+						matriz[(i*COL)+j]=254;
+					}
+					if(((*p)%2)==0){	//if para ver si es el jugador 2
+						matriz[(i*COL)+j]=250;
+					}
 				}
-
 			}
 			}
 			(*m)++;
 }
-void Imagenrespuestachica(char *matriz,int*cc,int*r,int*c,int*ci,int*cj){
+void Imagenrespuestachica(char *matriz,int*cc,int*r,int*c,int*ci,int*cj,int *p){
 			int i,j;
 			for(i=(*ci);i<(REN)-(*r);i++){
 			for(j=(*cj);j<(COL)-(*c);j++){
 				if((i-(*ci))==1&&(j-(*cj))==1){
-				matriz[(i*COL)+j]=254;
+					if(((*p)%2)!=0){	//if para ver si es el jugador 1
+						matriz[(i*COL)+j]=254;
+					}
+					if(((*p)%2)==0){	//if para ver si es el jugador 2
+						matriz[(i*COL)+j]=250;
+					}
 				}
 
 			}
 			}
 		(*cc)++;
 }
-void Imagenrespuestagrande(char *matriz,int* g,int*r,int*c,int*ci,int*cj){
+void Imagenrespuestagrande(char *matriz,int* g,int*r,int*c,int*ci,int*cj,int *p){
 	int i,j;
 		for(i=(*ci);i<(REN)-(*r);i++){
 			for(j=(*cj);j<(COL)-(*c);j++){
 			if((i-(*ci))==0 || (j-(*cj))==0||(j-(*cj))==2||(i-(*ci))==2){
-				matriz[(i*COL)+j]=254;
+					if(((*p)%2)!=0){	//if para ver si es el jugador 1
+						matriz[(i*COL)+j]=254;
+					}
+					if(((*p)%2)==0){	//if para ver si es el jugador 2
+						matriz[(i*COL)+j]=250;
+					}
 			}
 
 		}
 	}
 	(*g)++;
 }
-int cuadrante(){
-	int ddx=0,opc;
-	printf("Donde quieres poner tu pieza?\n");
+int cuadrante(int*p){
+	int ddx=0,opc,jugador;
+	if((*p)%2!=0)
+	jugador=1;
+	else 
+	jugador=2;
+	printf("Donde quieres poner tu pieza jugador %d?\n",jugador);
 	do{
 	scanf("%d",&opc);
 	if(opc<1||opc>9){
@@ -190,8 +212,8 @@ void separacion(int x,int* r,int* c,int *ci,int*cj ){
 }
 int menu(char* respuesta,int*g1,int*g2,int*m1,int*m2,int*c1,int*c2,int*player,int* r,int*c,int*ci,int*cj){
 	int opc=0,xdd=0;
-    Inicirespuesta(respuesta);
-	xdd=cuadrante();
+    
+	xdd=cuadrante(player);
 	separacion(xdd,r,c,ci,cj);
 	do{
 	opc=tamano(respuesta,g1,g2,m1,m2,c1,c2,player,r,c,ci,cj);
@@ -215,7 +237,7 @@ int tamano(char* respuesta,int* g1,int* g2,int* m1,int* m2,int* c1,int* c2,int* 
 		case 1:
 			if(((*p)%2)!=0){
 				if((*g1)<2){
-					Imagenrespuestagrande(respuesta,g1,r,c,ci,cj);
+					Imagenrespuestagrande(respuesta,g1,r,c,ci,cj,p);
 					return 1;
 				}
 				else{
@@ -225,7 +247,7 @@ int tamano(char* respuesta,int* g1,int* g2,int* m1,int* m2,int* c1,int* c2,int* 
 			}
 			 if(((*p)%2)==0){
 				if((*g2)<2){
-					Imagenrespuestagrande(respuesta,g2,r,c,ci,cj);
+					Imagenrespuestagrande(respuesta,g2,r,c,ci,cj,p);
 					return 1;
 				}
 				else{
@@ -237,7 +259,7 @@ int tamano(char* respuesta,int* g1,int* g2,int* m1,int* m2,int* c1,int* c2,int* 
 		case 2:
 					if(((*p)%2)!=0){
 				if((*m1)<2){
-					Imagenrespuestamediana(respuesta,m1,r,c,ci,cj);
+					Imagenrespuestamediana(respuesta,m1,r,c,ci,cj,p);
 					return 1;
 				}
 				else{
@@ -247,7 +269,7 @@ int tamano(char* respuesta,int* g1,int* g2,int* m1,int* m2,int* c1,int* c2,int* 
 			}
 			 if(((*p)%2)==0){
 				if((*m2)<2){
-					Imagenrespuestamediana(respuesta,m2,r,c,ci,cj);
+					Imagenrespuestamediana(respuesta,m2,r,c,ci,cj,p);
 					return 1;
 				}
 				else{
@@ -260,7 +282,7 @@ int tamano(char* respuesta,int* g1,int* g2,int* m1,int* m2,int* c1,int* c2,int* 
 		case 3:
 							if(((*p)%2)!=0){
 				if((*c1)<2){
-					Imagenrespuestachica(respuesta,c1,r,c,ci,cj);
+					Imagenrespuestachica(respuesta,c1,r,c,ci,cj,p);
 					return 1;
 				}
 				else{
@@ -270,7 +292,7 @@ int tamano(char* respuesta,int* g1,int* g2,int* m1,int* m2,int* c1,int* c2,int* 
 			}
 			 if(((*p)%2)==0){
 				if((*c2)<2){
-					Imagenrespuestachica(respuesta,c2,r,c,ci,cj);
+					Imagenrespuestachica(respuesta,c2,r,c,ci,cj,p);
 					return 1;
 				}
 				else{
