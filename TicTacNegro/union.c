@@ -59,29 +59,29 @@ int main(){
     //declaracion de la matriz principal
     char respuesta[REN][COL];
     int duenos[DIMENSION_CUADRADA][DIMENSION_CUADRADA], tamanos[DIMENSION_CUADRADA][DIMENSION_CUADRADA];
-    int jugadorAzulPiezas[3] = {2, 2, 2};
-    int jugadorRojoPiezas[3] = {2, 2, 2};
+    int jugador1Piezas[3] = {2, 2, 2};   //son las piezas del jugador 1
+    int jugador2Piezas[3] = {2, 2, 2};  //son las piezas del jugador 2
     int ganador = 0;
     //variable para salida del ciclo do
     int opc = 0;
     do{ //ciclo do while para ver si quiere jugar otra partida
         Inicirespuesta((char *)respuesta);
         inicializarTablero(duenos, tamanos); 
-        *(jugadorAzulPiezas + 0) = 2; *(jugadorAzulPiezas + 1) = 2; *(jugadorAzulPiezas + 2) = 2;
-        *(jugadorRojoPiezas + 0) = 2; *(jugadorRojoPiezas + 1) = 2; *(jugadorRojoPiezas + 2) = 2;
+        *(jugador1Piezas + 0) = 2; *(jugador1Piezas + 1) = 2; *(jugador1Piezas + 2) = 2;
+        *(jugador2Piezas + 0) = 2; *(jugador2Piezas + 1) = 2; *(jugador2Piezas + 2) = 2;
         ganador = 0;
         player = 1;
         grandeT1 = 0; chicoT1 = 0; medT1 = 0; grandeT2 = 0; chicoT2 = 0; medT2 = 0;
-        // Imprimir tablero visual al inicio de la partida
+        //imprimir tablero visual al inicio de la partida
         Imptablero((char *)respuesta);
         do{ //ciclo do while para salirse cuando encuentre ganador o sea empate
             //llamada a la funcion menu donde se realizara casi todos los procedimientos
             //recibira un int para ver si continuar o salir
-            opc = menu((char *)respuesta, &grandeT1, &grandeT2, &medT1, &medT2, &chicoT1, &chicoT2, &player, &ren, &col, &ci, &cj, jugadorAzulPiezas, jugadorRojoPiezas, &ganador, duenos, tamanos);
+            opc = menu((char *)respuesta, &grandeT1, &grandeT2, &medT1, &medT2, &chicoT1, &chicoT2, &player, &ren, &col, &ci, &cj, jugador1Piezas, jugador2Piezas, &ganador, duenos, tamanos);
         }while(opc == 0); //condicional para salir
         printf("\n");
         if(ganador != 0){
-            printf("Jugador %s gana\n", (ganador == 1) ? "Azul" : "Rojo");
+            printf("Jugador %s gana\n", (ganador == 1) ? "Jugador 1" : "Jugador 2");
         } 
         else{
             printf("NO HAY GANADORES\n");
@@ -128,7 +128,7 @@ void Imagenrespuestamediana(char *matriz, int *m, int *r, int *c, int *ci, int *
             }
         }
     }
-    // Colocar la pieza mediana
+    // colocar la pieza mediana
     for(i = (*ci); i < (REN) - (*r); i++){
         //for que usara los apuntadores para ver donde iniciar y donde terminar en columnas
         for(j = (*cj); j < (COL) - (*c); j++){
@@ -148,7 +148,7 @@ void Imagenrespuestamediana(char *matriz, int *m, int *r, int *c, int *ci, int *
 
 void Imagenrespuestachica(char *matriz, int *cc, int *r, int *c, int *ci, int *cj, int *p){
     int i, j;
-    //limpiar la pieza para poner la otra
+    //limpiar la pieza para poner otra
     for(i = (*ci); i < (*ci) + 3; i++){
         for(j = (*cj); j < (*cj) + 3; j++){
             if(!(j == 3 || j == 7 || i == 3 || i == 7)){ //if para no limpiar las --- (mantener el grid)
@@ -288,7 +288,7 @@ int menu(char *respuesta, int *g1, int *g2, int *m1, int *m2, int *c1, int *c2, 
     do{ //ciclo do para 
         //chequeo de si puede hacer jugadas posibles antes de avanzar
         int jugador = ((*player) % 2 != 0) ? 1 : 2;     //checar si es jugador 1 o 2 checando turno par o impar
-        int *piezas = ((*player) % 2 != 0) ? ap : rp;   //asignacion de puntero a las piezas del azul (ap) o piezas del rojo (rp)
+        int *piezas = ((*player) % 2 != 0) ? ap : rp;   //asignacion de puntero a las piezas del jugador 1 (ap) o piezas del jugador 2 (rp)
         if(isLleno(duenos) || !tieneJugadasValidas(duenos, tamanos, piezas, jugador)){
             return 1; //terminar el juego si un jugador ya no tiene jugadas posibles en su turno (o sea empate)
         }
@@ -335,9 +335,9 @@ int tamano(char *respuesta, int *g1, int *g2, int *m1, int *m2, int *c1, int *c2
     }
     int *piezas;
     if(((*p) % 2) != 0){
-        piezas = ap;
+        piezas = ap;    //es apuntador a piezas del jugador 1 (antes era jugador azul) por eso azul puntero (ap)
     }else{
-        piezas = rp;
+        piezas = rp;    //es apuntador a piezas del jugador 2 (antes era jugador rojo) por eso rojo puntero (rp)
     }
     switch(pz){ //switch para la seleccion
         case 1: //caso grande
@@ -453,14 +453,14 @@ void desplegarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSIO
     printf("\n---Tablero---\n");
     for(int i = 0; i < DIMENSION_CUADRADA; i++){
         for(int j = 0; j < DIMENSION_CUADRADA; j++){
-            int d = *(*(duenos + i) + j); //asigna dueno de pieza 0 nadie, 1 azul, 2 rojo
+            int d = *(*(duenos + i) + j); //asigna dueno de pieza 0 nadie, 1 jugador 1, 2 jugador 2
             int t = *(*(tamanos + i) + j); //asigna tamano de pieza
             if(d == 0){
                 printf("[   ]"); //pieza sin duenos
             } else if(d == 1){
-                printf("[A%d]", t); //dueno azul
+                printf("[A%d]", t); //dueno jugador 1
             } else if(d == 2){
-                printf("[R%d]", t); //dueno rojo
+                printf("[R%d]", t); //dueno jugador 2
             }
         }
         printf("\n");
@@ -468,7 +468,7 @@ void desplegarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSIO
     printf("\n");
 }
 
-//coloca pieza y valida que si se pueda colocar
+//coloca pieza y valida que si se pueda colocar (solo coloca la pieza en sus correspondientes logicos, tiene validacion especifica para tablero logico
 bool colocarPieza(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA], int jugador, int pos, int tam, int *piezas){
     //checar que no sea posicion fuera del tablero
     if(pos < 1 || pos > 9){
