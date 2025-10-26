@@ -212,10 +212,9 @@ void separacion(int x,int* r,int* c,int *ci,int*cj ){
 }
 int menu(char* respuesta,int*g1,int*g2,int*m1,int*m2,int*c1,int*c2,int*player,int* r,int*c,int*ci,int*cj){
 	int opc=0,xdd=0;
-    
+	do{
 	xdd=cuadrante(player);
 	separacion(xdd,r,c,ci,cj);
-	do{
 	opc=tamano(respuesta,g1,g2,m1,m2,c1,c2,player,r,c,ci,cj);
 	}while(opc==0);
 	Imptablero(respuesta);
