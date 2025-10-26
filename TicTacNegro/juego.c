@@ -25,6 +25,7 @@ void printfAzulChar(char);
 int cuadrante(int*);
 //prototipo de la funcion separacion
 void separacion(int,int*,int*,int *,int*);
+void reiniciovariables(int*,int*,int*,int*,int*,int*,int*);
 
 int main(){
 	//declaracion de variables en main que se usaran como apuntadores en todo el codigo
@@ -40,6 +41,7 @@ int main(){
 	//variable para salida del ciclo do
     int opc=0;
 	do{ //ciclo do while para ver si quiere jugar otra partida
+		reiniciovariables(&grandeT1,&grandeT2,&medT1,&medT2,&chicoT1,&chicoT2,&player);
 		Inicirespuesta((char*)respuesta);
     do{	//ciclo do while para salirse cuando encuentre ganador o sea empate
 		//llamada a la funcion menu donde se realizara casi todos los procedimientos
@@ -60,7 +62,15 @@ void printfRojoChar(char c){
 void printfAzulChar(char c){
     printf("\033[1;34m%c\033[0m",c);
 }
-
+void reiniciovariables(int*g1,int*g2,int*m1,int*m2,int*c1,int*c2,int*player){
+	(*g1)=0;
+	(*g2)=0;
+	(*m1)=0;
+	(*m2)=0;
+	(*c1)=0;
+	(*c2)=0;
+	(*player)=1;
+}
 void Imptablero(char *matriz){	//funcion para imprimir todo el tablero
 	
 
@@ -153,9 +163,9 @@ int cuadrante(int*p){	//funcion para asignar el cuadrante
 	jugador=1;
 	else 
 	jugador=2;
+	do{
 	//impresion para que puedan escoger el cuadrante
 	printf("Donde quieres poner tu pieza jugador %d?\n",jugador);
-	do{
 	scanf("%d",&opc);	//scanf para el cuadrante seleccionado
 	if(opc<1||opc>9){
 		printf("\nfuera de rango\n");	//impresion para decir que no puedes seleccionar eso
