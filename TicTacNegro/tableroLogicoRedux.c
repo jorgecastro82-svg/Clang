@@ -148,7 +148,7 @@ bool colocarPieza(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CU
     //colocacion de pieza asi como su dueno y su tamano
     *(*(duenos + fila) + col) = jugador;
     *(*(tamanos + fila) + col) = tam;
-    (*(piezas + (tam-1)))--; //actualiza las piezas que tiene de ese tamano
+    (*(piezas + (tam-1)))--; //actualiza las piezas que tiene de ese tamano o sea las decrementa si se puso una
     return true;
 }
 
