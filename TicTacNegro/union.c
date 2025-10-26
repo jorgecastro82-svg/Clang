@@ -29,10 +29,10 @@ int cuadrante(int *);
 void separacion(int, int *, int *, int *, int *);
 //prototipos de las funciones
 
-//inicializa la matriz de duenos y tamanos en 0s
+//inicializa la matriz de duenos y tamanos en 0s (es la matriz logic)
 void inicializarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA]); 
 
-//despliegue tablero, mostrando duenos y tamanos
+//despliegue tablero, mostrando duenos y tamanos (sirve para debugeo, el usuario nunca lo vera)
 void desplegarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA]);  
 
 //valida colocacion de piezas
