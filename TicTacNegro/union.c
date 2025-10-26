@@ -19,14 +19,11 @@ void Imagenrespuestachica(char *, int *, int *, int *, int *, int *, int *);
 void Imagenrespuestagrande(char *, int *, int *, int *, int *, int *, int *);
 //prototipo de la funcion tamano
 int tamano(char *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int *, int (*)[DIMENSION_CUADRADA], int (*)[DIMENSION_CUADRADA]);
-//prototipo de la funcion printf rojo
-void printfRojoChar(char);
-//prototipo de la funcion printf azul
-void printfAzulChar(char);
 //prototipo de la funcion cuadrante
 int cuadrante(int *);
 //prototipo de la funcion separacion
 void separacion(int, int *, int *, int *, int *);
+
 //prototipos de las funciones
 
 //inicializa la matriz de duenos y tamanos en 0s (es la matriz logic)
@@ -43,6 +40,9 @@ int checarGanador(int (*duenos)[DIMENSION_CUADRADA]);
 
 //checar si esta lleno
 bool isLleno(int (*duenos)[DIMENSION_CUADRADA]);
+
+//checar si el jugador tiene jugadas validas (basicamente solo checa condicion de empate)
+bool tieneJugadasValidas(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA], int *piezas, int jugador);
 
 //es combinacion de printf y scanf con limpieza de buffer, pero en especifico sirve para evitar que se te ponga infinitamente el despliegue cuando te ingresan una letra
 int inputNumero(char *mensaje); 
@@ -92,14 +92,6 @@ int main(){
     return 0;
 }
 
-void printfRojoChar(char c){
-    printf("\033[1;31m%c\033[0m", c);
-}
-
-void printfAzulChar(char c){
-    printf("\033[1;34m%c\033[0m", c);
-}
-
 void Imptablero(char *matriz){ //funcion para imprimir todo el tablero
     printf("\n");
     int i = 0, j = 0;
@@ -128,7 +120,15 @@ void Inicirespuesta(char *matriz){ //funcion para inicializar la matriz
 
 void Imagenrespuestamediana(char *matriz, int *m, int *r, int *c, int *ci, int *cj, int *p){
     int i, j;
-    //for que usara los apuntadores para ver donde iniciar y donde terminar en renglones
+    //limpiar la pieza para poner la otra
+    for(i = (*ci); i < (*ci) + 3; i++){
+        for(j = (*cj); j < (*cj) + 3; j++){
+            if(!(j == 3 || j == 7 || i == 3 || i == 7)){ //if para no limpiar las --- (mantener el grid)
+                *(matriz + (i * COL) + j) = ' ';
+            }
+        }
+    }
+    // Colocar la pieza mediana
     for(i = (*ci); i < (REN) - (*r); i++){
         //for que usara los apuntadores para ver donde iniciar y donde terminar en columnas
         for(j = (*cj); j < (COL) - (*c); j++){
@@ -148,7 +148,15 @@ void Imagenrespuestamediana(char *matriz, int *m, int *r, int *c, int *ci, int *
 
 void Imagenrespuestachica(char *matriz, int *cc, int *r, int *c, int *ci, int *cj, int *p){
     int i, j;
-    //for que usara los apuntadores para ver donde iniciar y donde terminar en renglones
+    //limpiar la pieza para poner la otra
+    for(i = (*ci); i < (*ci) + 3; i++){
+        for(j = (*cj); j < (*cj) + 3; j++){
+            if(!(j == 3 || j == 7 || i == 3 || i == 7)){ //if para no limpiar las --- (mantener el grid)
+                *(matriz + (i * COL) + j) = ' ';
+            }
+        }
+    }
+    // Colocar la pieza chica
     for(i = (*ci); i < (REN) - (*r); i++){
         //for que usara los apuntadores para ver donde iniciar y donde terminar en columnas
         for(j = (*cj); j < (COL) - (*c); j++){
@@ -168,7 +176,15 @@ void Imagenrespuestachica(char *matriz, int *cc, int *r, int *c, int *ci, int *c
 
 void Imagenrespuestagrande(char *matriz, int *g, int *r, int *c, int *ci, int *cj, int *p){
     int i, j;
-    //for que usara los apuntadores para ver donde iniciar y donde terminar en renglones
+    //limpiar la pieza para poner la otra
+    for(i = (*ci); i < (*ci) + 3; i++){
+        for(j = (*cj); j < (*cj) + 3; j++){
+            if(!(j == 3 || j == 7 || i == 3 || i == 7)){ //if para no limpiar las --- (mantener el grid)
+                *(matriz + (i * COL) + j) = ' ';
+            }
+        }
+    }
+    //colocar pieza grande
     for(i = (*ci); i < (REN) - (*r); i++){
         //for que usara los apuntadores para ver donde iniciar y donde terminar en columnas
         for(j = (*cj); j < (COL) - (*c); j++){
@@ -270,6 +286,12 @@ int menu(char *respuesta, int *g1, int *g2, int *m1, int *m2, int *c1, int *c2, 
     //variables que se van a utilizar adentro de menu
     int opc = 0, xdd = 0;
     do{ //ciclo do para 
+        //chequeo de si puede hacer jugadas posibles antes de avanzar
+        int jugador = ((*player) % 2 != 0) ? 1 : 2;     //checar si es jugador 1 o 2 checando turno par o impar
+        int *piezas = ((*player) % 2 != 0) ? ap : rp;   //asignacion de puntero a las piezas del azul (ap) o piezas del rojo (rp)
+        if(isLleno(duenos) || !tieneJugadasValidas(duenos, tamanos, piezas, jugador)){
+            return 1; //terminar el juego si un jugador ya no tiene jugadas posibles en su turno (o sea empate)
+        }
         xdd = cuadrante(player); //llamada a la funcion cuadrante que regresara un valor y se lo dara a xdd
         //llamada a la funcion separacion para asignar los valores que se usaran en tamano
         separacion(xdd, r, c, ci, cj);
@@ -282,9 +304,6 @@ int menu(char *respuesta, int *g1, int *g2, int *m1, int *m2, int *c1, int *c2, 
         return 1; //retorno 1
     }
     (*player)++; //incremento que se usara para saber que jugador esta al momento
-    if((*player) == 13){ //if para regresarse en caso de que ya existieran 12 jugadas
-        return 1; //retorno 1
-    }
     return 0; //retorno 0
 }
 
@@ -304,12 +323,12 @@ int tamano(char *respuesta, int *g1, int *g2, int *m1, int *m2, int *c1, int *c2
     int celdaTam = *(*(tamanos + fila) + colu);
     int celdaDueno = *(*(duenos + fila) + colu);
     int jugador = ((*p) % 2 != 0) ? 1 : 2;
-    // Verificar si la casilla ya pertenece al jugador actual
+    //checar si la pieza ya le pertenece al mismo jugador
     if(celdaDueno == jugador){
-        printf("No puedes colocar una pieza sobre tu propia pieza\n");
+        printf("No puedes colocar una pieza sobre tus propias piezas\n");
         return 0;
     }
-    // Verificar si la pieza es lo suficientemente grande
+    
     if(celdaDueno != 0 && new_tam <= celdaTam){ //checar que si se la pueda comer, checar si es menor o igual
         printf("Tu pieza no es lo suficientemente grande como para comerte a la que esta ahi\n");
         return 0;
@@ -419,9 +438,7 @@ int tamano(char *respuesta, int *g1, int *g2, int *m1, int *m2, int *c1, int *c2
     }
 }
 
-//LLenado de los cuerpos de las funciones
-
-// Inicializa el tablero vacio
+//inicializar el tablero logico en cada partida a 0s
 void inicializarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA]){
     for(int i = 0; i < DIMENSION_CUADRADA; i++){
         for(int j = 0; j < DIMENSION_CUADRADA; j++){
@@ -431,7 +448,7 @@ void inicializarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENS
     }
 }
 
-// Muestra el tablero en pantalla
+//despliegue del tablero logico (SOLO ES PARA DEBUGEO EL USUARIO NUNCA LA VERA)
 void desplegarTablero(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA]){
     printf("\n---Tablero---\n");
     for(int i = 0; i < DIMENSION_CUADRADA; i++){
@@ -521,6 +538,31 @@ bool isLleno(int (*duenos)[DIMENSION_CUADRADA]){
     return true; //todo esta ocupado
 }
 
+//checar si el jugador tiene posibilidades de poner una pieza (condicion de empate basicamente)
+bool tieneJugadasValidas(int (*duenos)[DIMENSION_CUADRADA], int (*tamanos)[DIMENSION_CUADRADA], int *piezas, int jugador){
+    for(int i = 0; i < DIMENSION_CUADRADA; i++){
+        for(int j = 0; j < DIMENSION_CUADRADA; j++){
+            int celdaDueno = *(*(duenos + i) + j);
+            int celdaTam = *(*(tamanos + i) + j);
+            //caso de que haya casillas vacias en el tablero
+            if(celdaDueno == 0){
+                if(*(piezas + 0) > 0 || *(piezas + 1) > 0 || *(piezas + 2) > 0){
+                    return true;
+                }
+            }
+            //checar si puede comerse las piezas del jugador opuesto
+            else if(celdaDueno != jugador){
+                if((celdaTam == 1 && *(piezas + 1) > 0) || 
+                   (celdaTam == 1 && *(piezas + 2) > 0) || 
+                   (celdaTam == 2 && *(piezas + 2) > 0)){
+                    return true;
+                }
+            }
+        }
+    }
+    return false; //no tiene jugadas posibles asi que hay empate
+}
+
 //leer numeros enteros sin que se haga bucle infinito, combinacion de printf y scanf aparte de limpiada de buffer
 int inputNumero(char *mensaje){
     int valor;
@@ -535,4 +577,4 @@ int inputNumero(char *mensaje){
         while((c = getchar()) != '\n' && c != EOF); //limpiada de buffer
         return valor;
     }
-}
+}    
